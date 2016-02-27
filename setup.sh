@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #安装云监工环境脚本
 #sanzuwu@gamil.com
 #脚本适用ubuntu14、debian8
