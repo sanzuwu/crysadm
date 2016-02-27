@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 echo 'Start crysadm on'  $(date) >> /tmp/crysadm.txt
 
 sudo pkill redis-server
