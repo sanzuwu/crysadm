@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 echo 'Stop crysadm on'  $(date) >> /tmp/crysadm.txt
 
 sudo pkill redis-server
