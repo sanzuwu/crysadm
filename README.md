@@ -10,4 +10,6 @@
 用 cd 命令进入任意可写权限文件夹，输入命令 sudo git clone https://github.com/sanzuwu/crysadm.git ，等待下载完成，输入命令
 cd crysadm  && sudo chmod +x setup.sh && ./setup.sh,此时等待安装，完成后会自动启动云监工。
 
+其中run.sh是运行脚本，down.sh是停止脚本，setup.sh是安装环境脚本。
+
 剩下的就是设置自启动，隔一段时间自动重启程序，还有时区设置问题，自行百度。
