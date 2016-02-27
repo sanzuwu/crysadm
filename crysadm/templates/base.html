@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>Crysadm+</title>
+
+    <link rel="icon" href="../static/img/logo_full.png" type="image/png">
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/font-awesome/css/font-awesome.css" rel="stylesheet">
+    {% block css_block %}{% endblock %}
+    <link href="../static/css/animate.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
+
+
+    <style>
+
+        @media (max-width: 640px) {
+            .col-lg-12,.col-lg-5,.col-lg-7,.col-lg-6,.col-lg-4,.col-lg-8, .ibox, .col-lg-12>div>.ibox-content, .col-md-6{
+                padding:0;
+                margin:0;
+            }
+            .navbar-right{
+                float: right !important;
+            }
+            .navbar-static-top {
+                background-color: #FFF;
+            }
+            #top_logout{
+                margin-right: 10px !important;
+            }
+            #page-wrapper {
+                padding:0px 5px 0px 5px;
+                margin:0;
+            }
+            #sys_error_box>div{
+                font-size: 16px!important;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+{% set navigation_bar = [
+    ('dashboard','/dashboard', '<i class="fa fa-fw fa-dashboard"></i>', '监控中心','',[]),
+    ('analyzer','/analyzer', '<i class="fa fa-fw fa-bar-chart-o"></i>', '数据分析','',[]),
+    ('excavators','/excavators', '<i class="fa fa-fw fa-sitemap"></i>', '我的矿机','',[]),
+    ('accounts','/#', '<i class="fa fa-fw fa-user"></i>', '账号管理','',
+        [('accounts','/accounts', '迅雷账号管理'),
+        ('profile','/user/profile', '我的个人信息')]),
+
+] -%}
+{% set navigation_admin_bar = [
+    ('admin','/#', '<i class="fa fa-fw fa-gear"></i>', '系统管理',[
+        ('admin_user','/admin/user', '用户管理'),
+        ('admin_message','/admin/message', '通知管理'),
+        ('admin_invitation','/admin/invitation', '邀请管理')
+    ])
+] -%}
+{% set active_page = active_page|default('index_temp') -%}
+
+<div id="wrapper">
+    {% if api_error_info is defined %}
+        <header id="sys_error_box" class="navbar" style="background-color: #1ab394;margin: 0px;min-height: 30px;">
+            <div class="col-lg-12" style="font-size:28px;color: #fff;font-weight: bold;text-align: center">
+                {{ api_error_info }}
+            </div>
+        </header>
+    {% endif %}
+    {% if session.admin_user_info is defined %}
+        <header id="sys_error_box" class="navbar" style="background-color: #F8AC59;margin: 0px;min-height: 30px !important;">
+            <div class="col-lg-12" style="font-size:24px;color: #fff;font-weight: bold;text-align: center;">
+                尊敬的管理员,您正在登陆 {{ session.user_info.username }} 的账户
+            </div>
+        </header>
+    {% endif %}
+
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+
+                <li class="nav-header" style="padding: 0px;">
+                    <img alt="Logo" src="../static/img/logo_full.png" style="width: 70px;padding: 10px 10px 20px 10px;">
+                    <div style="float: right; margin-top: 14px; margin-right: 10px;">
+                        <span class="nav-label" style="font-size: 28px"><b style="color:#FFF">Crysadm+</b></span>
+                    </div>
+                    <div class="nav-label" style="margin: 30px 0px 0px 30px;padding-bottom: 30px;">
+
+                                <span class="block m-t-xs">
+                                <strong class="font-bold" style="color:#FFF">{{ session.user_info.username }}</strong>
+                             </span>
+                    </div>
+
+                </li>
+                {% for id, href, icon, caption, tip_icon, sub_navigation_bar in navigation_bar %}
+                    <li{% if id == active_page or active_page in sub_navigation_bar|map(attribute='0') %} class="active"{% endif %}>
+                        <a href="{{ href|e }}">{{ icon|safe }} <span class="nav-label">{{ caption|e }}</span>
+                            {% if sub_navigation_bar|length > 0 %}<span class="fa arrow"></span>{% endif %}
+                            {{ tip_icon | safe }}
+                        </a>
+                        {% if sub_navigation_bar|length > 0 %}
+                            <ul style="" class="nav nav-second-level collapse">
+                                {% for id, href, caption in sub_navigation_bar  %}
+                                    <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                {% if session.user_info.is_admin %}
+                    {% for id, href, icon, caption,sub_navigation_bar in navigation_admin_bar %}
+                        <li{% if id == active_page or active_page in sub_navigation_bar|map(attribute='0') %} class="active"{% endif %}>
+                            <a href="{{ href|e }}">{{ icon|safe }} <span class="nav-label">{{ caption|e }}</span>
+                                {% if sub_navigation_bar |length > 0 %}<span class="fa arrow"></span>{% endif %}
+                            </a>
+                            {% if sub_navigation_bar |length > 0 %}
+                                <ul style="" class="nav nav-second-level collapse">
+                                    {% for id, href, caption in sub_navigation_bar  %}
+                                        <li {% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% endif %}
+
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                        <span class="m-r-sm text-muted"><span class="fa fa-rmb visible-xs-inline"></span><span class="hidden-xs">余额:</span> {{ convert_to_yuan(balance) }}</span>
+
+                    </li>
+                    {% if msg_box|length > 0 %}
+                        <li class="visible-xs-inline-block">
+                            <a class="count-info" href="/messagebox">
+                                <i class="fa fa-envelope"></i>  <span class="label label-warning">{{ msg_count }}</span>
+                            </a>
+                        </li>
+                        <li class="dropdown hidden-xs">
+                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                <i class="fa fa-envelope"></i>  <span class="label label-warning">{{ msg_count }}</span>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-messages">
+
+                                {% for row in msg_box %}
+                                    <li>
+                                        <a href="/messagebox">
+                                            <div>
+                                                <strong>{{ row.subject }}</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>{{ row.time }}</em>
+                                    </span>
+                                            </div>
+                                            <div>{{ row.content }}</div>
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                {% endfor %}
+
+                                <li>
+                                    <a class="text-center" href="/messagebox">
+                                        <strong>查看所有通知</strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    {% else %}
+                        <li>
+                            <a href="/messagebox">
+                                <i class="fa fa-envelope"></i>
+                            </a>
+                        </li>
+
+                    {% endif %}
+                    <li id="top_logout">
+                        <a href="/user/logout">
+                            <i class="fa fa-sign-out"></i> 登出
+                        </a>
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
+        <div class="row wrapper border-bottom white-bg page-heading hidden-xs">
+            {% block navibar %}{% endblock %}
+
+            <div class="col-lg-2">
+
+            </div>
+        </div>
+        <div class="wrapper wrapper-content">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="footer">
+
+            <div class="pull-right">
+                <strong>Copyright</strong> powergx &copy; 2015-
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="../static/js/jquery-2.1.1.js"></script>
+<script src="../static/js/jquery.cookie.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="../static/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="../static/js/inspinia.js"></script>
+<!--<script src="../static/js/plugins/pace/pace.min.js"></script>-->
+
+{% block js_logic %}{% endblock %}
+
+</body>
+
+</html>

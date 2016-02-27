@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crysadm+ | Login</title>
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="../static/css/animate.css" rel="stylesheet">
+    <link href="../static/css/style.css" rel="stylesheet">
+    <style>
+        @media (max-width: 640px) {
+
+            .loginColumns{
+                padding-top: 0px;
+            }
+
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+
+<div class="loginColumns animated fadeInDown">
+    <div class="row">
+
+        <div class="col-md-5">
+            <h2 class="font-bold">欢迎来到 Crysadm+</h2>
+
+            <p>
+                提供最优美的界面.
+            </p>
+
+            <p>
+                提供最方便的监控方式.
+            </p>
+
+            <p>
+                我是迅雷矿场云端监控大师.
+            </p>
+
+            <p>
+                <small></small>
+            </p>
+
+        </div>
+        <div class="col-md-7">
+            <div class="ibox-content">
+                {% if inv_codes|length >0 %}
+                    <div class="table-responsive table-bordered">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>邀请链接</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for code in inv_codes %}
+
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <a href="{{ request.url_root }}register?inv_code={{ code.decode('utf-8')|e }}">
+                                            {{ code.decode('utf-8')|e }}
+                                        </a>
+
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        暂时没有可用的邀请码,请稍后再试.
+                    </div>
+                {% endif %}
+                <!-- /.table-responsive -->
+                <p class="m-t">
+                    <small>Inspinia threme &copy; 2014</small>
+                </p>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-6">
+            Copyright powergx
+        </div>
+        <div class="col-md-6 text-right">
+            <small>© 2015-</small>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
