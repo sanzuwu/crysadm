@@ -12,7 +12,7 @@ sudo apt-get update
 sudo apt-get install -y python3.4 python3.4-dev 
 
 #安装pip，确保本脚本和get-pip.py 文件在一个文件夹
-BASE_DIR=$(pwd)
+BASE_DIR="$( cd "$( dirname "$0"  )" && pwd  )"
 sudo chmod +x ${BASE_DIR}/get-pip.py
 sudo python3.4 ${BASE_DIR}/get-pip.py
 
