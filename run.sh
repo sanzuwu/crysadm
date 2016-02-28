@@ -4,7 +4,7 @@ echo 'Start crysadm on'  $(date) >> /tmp/crysadm.txt
 sudo pkill redis-server
 sudo pkill python3.4
 
-BASE_DIR=$(pwd)                                                             
+BASE_DIR="$( cd "$( dirname "$0"  )" && pwd  )"                                                             
 ls ${BASE_DIR}/ >> /tmp/error 2>&1
                                      
 echo $PATH >> /tmp/error           
