@@ -189,62 +189,57 @@ def dashboard_DoD_income():
     yesterday_series = dict(name='昨日', data=[], pointPadding=-0.1, pointPlacement=0, color='#1AB394')
 
     now = datetime.now()
-    key = 'user_data:%s:%s' % (username, now.strftime('%Y-%m-%d'))
-    b_today_data_new = r_session.get(key)
-    today_data_new = json.loads(b_today_data_new.decode('utf-8'))
-    
-    today_series['data'] = []
-    for i in range(24-now.hour, 25):
-        temp = 0 
-        for hourly_produce in today_data_new.get('produce_stat'):
-            temp +=  hourly_produce.get('hourly_list')[i]
-        today_series['data'].append(temp)
+    today_data = income_history.get(now.strftime('%Y-%m-%d'))
+    yesterday_data = income_history.get((now + timedelta(days=-1)).strftime('%Y-%m-%d'))
 
-    key = 'user_data:%s:%s' % (username, (now + timedelta(days=-1)).strftime('%Y-%m-%d'))
-    b_yesterday_data_new = r_session.get(key)
-    if b_yesterday_data_new is None:
-        yesterday_series['data'] = []
-    else:
-        yesterday_data_new = json.loads(b_yesterday_data_new.decode('utf-8'))
-        yesterday_series['data'] = []
-        for i in range(1, 25):
-            if yesterday_data_new.get('produce_stat') is None:
-                break
-            temp = 0
-            for hourly_produce in yesterday_data_new.get('produce_stat'):
-                temp += hourly_produce.get('hourly_list')[i]
-            yesterday_series['data'].append(temp)
-
-    today_speed_series = dict(name='今日', data=[], type = 'spline', pointPadding=0.2, pointPlacement=0, color='#676A6C', tooltip=dict(valueSuffix=' kbps'))
-    yesterday_speed_series = dict(name='昨日', data=[], type = 'spline', pointPadding=-0.1, pointPlacement=0, color='#1AB394', tooltip=dict(valueSuffix=' kbps'))
-
-    today_speed_data = today_data_new.get('speed_stat')
-    yesterday_speed_data = yesterday_data_new.get('speed_stat')
-
+    yesterday_last_value = 0
+    today_data_last_value = 0
     for i in range(0, 24):
-        if yesterday_speed_data is not None:
-            yesterday_speed_series['data'].append(sum(row.get('dev_speed')[i] for row in yesterday_speed_data))
-        if i + now.hour < 24:
+        hour = '%02d' % i
+        yesterday_value = 0
+        today_data_value = 0
+        yesterday_next_value = 0
+        if yesterday_data is not None:
+            next_data = yesterday_data.get('%02d' % (i + 1))
+            if yesterday_data.get('%02d' % (i + 1)) is not None:
+                yesterday_next_value = sum(row['pdc'] for row in next_data)
+            if yesterday_data.get(hour) is not None:
+                yesterday_value = sum(row['pdc'] for row in yesterday_data.get(hour))
+            else:
+                if yesterday_next_value != 0:
+                    yesterday_value = int((yesterday_next_value - yesterday_last_value) / 2) + \
+                                      yesterday_last_value
+                else:
+                    yesterday_value = yesterday_last_value
+
+        yesterday_series['data'].append(yesterday_value - yesterday_last_value)
+        yesterday_last_value = yesterday_value
+
+        if i >= now.hour:
             continue
 
-        if today_speed_data is not None:
-            today_speed_series['data'].append(sum(row.get('dev_speed')[i] for row in today_speed_data))
-    today_speed_series['data'].append(today_data_new.get('last_speed')*8)
+        if today_data is not None and today_data.get(hour) is not None:
+            today_data_value = sum(row['pdc'] for row in today_data.get(hour))
+
+        if today_data_value != 0:
+            today_series['data'].append(today_data_value - today_data_last_value)
+
+            today_data_last_value = today_data_value
+        else:
+            today_series['data'].append(0)
 
     now_income_value = sum(today_series['data'][0:now.hour])
-    dod_income_value = sum(yesterday_series['data'][:now.hour])
-    yesterday_last_value = sum(yesterday_series['data'][:])
+    dod_income_value = sum(yesterday_series['data'][0:now.hour])
 
     expected_income = '-'
     if dod_income_value > 0:
         expected_income = str(int((yesterday_last_value / dod_income_value) * now_income_value))
 
     dod_income_value += int((yesterday_series['data'][now.hour]) / 60 * now.minute)
-    return Response(json.dumps(dict(series=[yesterday_series, today_series, yesterday_speed_series, today_speed_series],
+    return Response(json.dumps(dict(series=[yesterday_series, today_series],
                                     data=dict(last_day_income=yesterday_last_value, dod_income_value=dod_income_value,
                                               expected_income=expected_income)
                                     )), mimetype='application/json')
-
 
 # 显示登录界面
 @app.route('/')
