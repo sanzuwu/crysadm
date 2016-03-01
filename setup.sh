@@ -18,11 +18,14 @@ sudo python3.4 ${BASE_DIR}/get-pip.py
 
 sudo pip3.4 install redis && sudo pip3.4 install requests && sudo pip3.4 install flask
 
-#安装redis-server，git
+#安装redis-server
 sudo apt-get install -y redis-server 
 
 
 #运行云监工
 
-sudo chmod +x ${BASE_DIR}/run.sh && sudo chmod +x ${BASE_DIR}/down.sh && sh ${BASE_DIR}/run.sh
+sudo chmod +x ${BASE_DIR}/run.sh && sudo chmod +x ${BASE_DIR}/down.sh 
+sudo sh ${BASE_DIR}/run.sh
+#sudo python3.4 ${BASE_DIR}/crysadm/crysadm/crydadm_hlper.py &
+#sudo python3.4 ${BASE_DIR}/crysadm/crysadm/crydadm.py &
 
