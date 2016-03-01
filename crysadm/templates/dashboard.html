@@ -17,14 +17,16 @@
 {% endblock %}
 {% block content %}
 
-    <div class="row">    
+    <div class="row">
+
         <div class="col-lg-3 col-md-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right" style="padding-top: 5px;">实时</span>
                     <h5>上传速度</h5>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content" style="height: 88px;">
+
                     <div class="row">
                         <div class="col-xs-3">
                             <i class="fa fa-arrow-circle-up fa-4x"></i>
@@ -64,7 +66,8 @@
                     <span class="label label-info pull-right" style="padding-top: 5px;">今日</span>
                     <h5>水晶产量</h5>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content" style="height: 88px;">
+
                     <div class="row">
                         <div class="col-xs-3">
                             <i class="fa fa-rmb fa-4x"></i>
@@ -80,10 +83,28 @@
         <div class="col-lg-3 col-md-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
+                    <span class="label label-info pull-right" style="padding-top: 5px;">今日</span>
+                    <h5>宝箱收益</h5>
+                </div>
+                <div class="ibox-content" style="height: 88px;">
+
+                    <div class="row">
+                        <div class="col-xs-12 text-right" style="padding-left: 5px;">
+                            <h1 style="font-size: 44px; font-weight: bold;" class="no-margins" id="giftbox_pdc"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+      
+        <div class="col-lg-3 col-md-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
                     <span class="label label-primary pull-right" style="padding-top: 5px;">本周</span>
                     <h5>水晶产量</h5>
                 </div>
                 <div class="ibox-content" style="height: 88px;">
+
                     <div class="row">
                         <div class="col-xs-12 text-right" style="padding-left: 5px;">
                             <h1 style="font-size: 44px; font-weight: bold;" class="no-margins" id="w_pdc"></h1>
@@ -551,9 +572,15 @@
         });
 
 
+        var load_hourly_speed_detail = function(){
+            $.getJSON('/dashboard/DoD_income?random='+Math.random(),function(r_data) {
+                $('#DoD-income').highcharts().series[3].setData(r_data.series[3].data);
+            });
+        }
 
         var reload_data = function(){
             load_speed_share();
+            load_hourly_speed_detail();
             $.getJSON( "/dashboard_data?random="+Math.random(), function( data ) {
                 $('#real_time_speed').highcharts().series[0].addPoint([(new Date()).getTime(),data.today_data.last_speed], true, true);
                 if($('#live_speed').html() !== convert_speed(data.today_data.last_speed)){
@@ -587,6 +614,10 @@
                 if($('#m_pdc').html() !== convert_to_yuan(data.today_data.m_pdc)) {
                     $('#m_pdc').html(convert_to_yuan(data.today_data.m_pdc));
                     flash_element($('#m_pdc'));
+                }
+                if($('#giftbox_pdc').html() !== convert_to_yuan(data.today_data.giftbox_pdc)) {
+                    $('#giftbox_pdc').html(convert_to_yuan(data.today_data.giftbox_pdc));
+                    flash_element($('#giftbox_pdc'));
                 }
             })
         }

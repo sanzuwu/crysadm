@@ -7,8 +7,6 @@ from multiprocessing import Process
 from multiprocessing.dummy import Pool as ThreadPool
 import threading
 
-# from crysadm import conf, redis_conf, pool, r_session
-
 conf = None
 if socket.gethostname() == 'GXMBP.local':
     conf = config.DevelopmentConfig
@@ -22,8 +20,9 @@ redis_conf = conf.REDIS_CONF
 pool = redis.ConnectionPool(host=redis_conf.host, port=redis_conf.port, db=redis_conf.db, password=redis_conf.password)
 r_session = redis.Redis(connection_pool=pool)
 
-from api import *
 
+from api import *
+import sys
 # 获取用户数据
 def get_data(username):
     if DEBUG_MODE:
@@ -90,6 +89,9 @@ def get_data(username):
             account_data['mine_info'] = mine_info
             account_data['device_info'] = red_zqb.get('devices')
             account_data['income'] = xunlei_api_get_IncomeInfo(cookies)
+            account_data['giftbox_info'] = get_giftbox(cookies)
+            account_data['produce_info'] = get_produce_stat(cookies)
+            open_giftbox(account_data['giftbox_info'], cookies)
 
             if is_api_error(account_data.get('income')):
                 print('get_data:', user_id, 'income', 'error')
@@ -131,6 +133,9 @@ def save_history(username):
     today_data['income'] = 0
     today_data['speed_stat'] = list()
     today_data['pdc_detail'] = []
+    today_data['giftbox_detail'] = []
+    today_data['giftbox_pdc'] = 0
+    today_data['produce_stat'] = [] 
 
     for user_id in r_session.smembers('accounts:%s' % username):
         # 获取账号所有数据
@@ -156,6 +161,9 @@ def save_history(username):
 
         today_data['balance'] += data.get('income').get('r_can_use')
         today_data['income'] += data.get('income').get('r_h_a')
+        today_data['giftbox_pdc'] += data.get('mine_info').get('td_box_pdc')
+        today_data.get('produce_stat').append(dict(mid=data.get('privilege').get('mid'), hourly_list=data.get('produce_info').get('hourly_list')))
+
         for device in data.get('device_info'):
             today_data['last_speed'] += int(int(device.get('dcdn_upload_speed')) / 1024)
             today_data['deploy_speed'] += int(device.get('dcdn_download_speed') / 1024)
@@ -360,7 +368,16 @@ def background_exec_auto_drawcash():
     pool.close()
     pool.join()
 
-# 计时器函数，定期执行某个线程，时间单位为秒
+
+def open_giftbox(giftbox_info, cookies):
+    if giftbox_info is not None:
+        for box in giftbox_info:
+            if box.get('cnum') == 0:
+                r = open_stone(box.get('id'), cookies)
+                print("DEBUG =======================================open free gift box")
+                print("DEBUG==== num is", r.get('num'))
+
+
 def timer(func, seconds):
     while True:
         Process(target=func).start()
@@ -368,8 +385,8 @@ def timer(func, seconds):
 
 if __name__ == '__main__':
     # 收集水晶时间，单位为秒，默认为30秒。
-    # 每小时检测一次水晶收集
-    threading.Thread(target=timer, args=(background_collect_crystal, 3600)).start()
+    # 每6小时检测一次水晶收集
+    threading.Thread(target=timer, args=(background_collect_crystal, 21600)).start()
     # 刷新浏览器在线用户数据，单位为秒，默认为5秒。
     # 每5秒刷新一次在线用户数据
     threading.Thread(target=timer, args=(background_refresh_online_user_data, 5)).start()
