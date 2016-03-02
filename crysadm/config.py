@@ -23,7 +23,7 @@ class Config(object):
     PASSWORD_PREFIX = "08b3db21-d120-11e4-9ttd-10ddb199c373"  #密码前缀
     ENCRYPT_PWD_URL = None  #模式
     SERVER_IP = '0.0.0.0'  #服务器IP
-    SERVER_PORT = 4000  #端口
+    SERVER_PORT =4000   #端口
 
 # 正常运行时配置
 class ProductionConfig(Config):
