@@ -25,7 +25,7 @@ function random()
 }
 
 #定义变量minutes 为随机数
-minutes=$(retnum 0 59)
+minutes=$(random 0 59)
 echo "${minutes} * * * * root /app/crysadm/run.sh">>/etc/crontab
 echo ===============starting cron==================
 cron start
