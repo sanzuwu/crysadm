@@ -28,7 +28,7 @@ function random()
 minutes=$(random 0 59)
 echo "${minutes} * * * * root /app/crysadm/run.sh">>/etc/crontab
 echo ===============starting cron==================
-cron start
+/etc/init.d/cron start
 echo =================done!========================
 
 
