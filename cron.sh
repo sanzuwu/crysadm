@@ -23,10 +23,11 @@ function random()
 
     #还有一种返回，定义全价变量，然后函数改下内容，外面读取
 }
-
+#定义BASE_DIR为脚本所在目录，确保run.sh和cron.sh在同目录下
+BASE_DIR="$( cd "$( dirname "$0"  )" && pwd  )"
 #定义变量minutes 为随机数
 minutes=$(random 0 59)
-echo "${minutes} * * * * root /app/crysadm/run.sh">>/etc/crontab
+echo "${minutes} * * * * root ${BASE_DIR}/crysadm/run.sh">>/etc/crontab
 echo ===============starting cron==================
 /etc/init.d/cron start
 echo =================done!========================
