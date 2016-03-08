@@ -10,64 +10,35 @@
                 <!-- /.panel-heading -->
                 <div class="panel-body">
                     <!-- Nav tabs -->
-                    <ul class="nav nav-tabs">
-                        <li class="{% if action is none or action == 'info' %} active{% endif %}"><a href="#info" data-toggle="tab" aria-expanded="false">个人信息</a>
+                    <ul class="nav nav-tabs">                        
+                        <li class="{% if action is none or action == 'info' %} active{% endif %}">
+                            <a href="#info" data-toggle="tab" aria-expanded="false">个人信息</a>
                         </li>
-                        <li class="{% if action == 'password' %} active{% endif %}"><a href="#password" data-toggle="tab" aria-expanded="false">密码</a>
+                        <li class="{% if action == 'profile_autoactive' %} active{% endif %}">
+                            <a href="#profile_autoactive" data-toggle="tab" aria-expanded="false">自动任务</a>
+                        </li>
+                        <li class="{% if action == 'password' %} active{% endif %}">
+                            <a href="#password" data-toggle="tab" aria-expanded="false">密码</a>
                         </li>
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div class="tab-pane fade{% if action is none or action == 'info' %} active in{% endif %}" id="info">
-                            <br />
-                            {% if err_msg and (action is none or action == 'info') %}
+                        <div class="tab-pane fade{% if action == 'profile_autoactive' %} active in{% endif %}" id="profile_autoactive">
+                            {% if err_msg and (action == 'profile_autoactive') %}
                                 <div class="alert alert-danger alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     {{ err_msg }}
                                 </div>
                             {% endif %}
-
-
-
-                            <div class="form-group input-group ">
-                                <span class="input-group-addon"><span style="width: 16px; display: inline-block;">U</span></span>
-                                <input type="text" class="form-control" placeholder="" value="{{ user_info.username }}" disabled>
-                            </div>
-
-                            <div class="form-group input-group">
-                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-check"></i>
-                                            </span>
-                                <input type="text" class="form-control" value="{% if user_info.active %}O{% else %}X{% endif %}" disabled>
-                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">状态</span>
-                                            </span>
-                            </div>
-
-                            <div class="form-group input-group">
-                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i>
-                                            </span>
-                                <input type="text" class="form-control" value="{% if user_info.is_admin %}O{% else %}X{% endif %}" disabled>
-                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">管理员</span>
-                                            </span>
-                            </div>
-
-                            <div class="form-group input-group">
-                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-group"></i>
-                                            </span>
-                                <input type="text" class="form-control" value="{{ user_info.max_account_no|default('2') }}" disabled>
-                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">迅雷账号限制</span>
-                                            </span>
-                            </div>
-
                             <form role="form" action="/user/change_property/auto_collect/{% if user_info.auto_collect  %}0{% else %}1{% endif %}" method="post">
-
                                 <div class="form-group input-group">
                                      <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i>
                                                 </span>
                                     <input type="text" class="form-control" value="{% if user_info.auto_collect %}O{% else %}X{% endif %}" disabled>
                                     <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                         {% if user_info.auto_collect  %}
-                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动收取</button>
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消收取</button>
                                         {% else %}
                                             <button type="submit" class="btn btn-success">自动收取</button>
                                         {% endif %}
@@ -82,13 +53,79 @@
                                     <input type="text" class="form-control" value="{% if user_info.auto_drawcash %}O{% else %}X{% endif %}" disabled>
                                     <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                         {% if user_info.auto_drawcash  %}
-                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动提现</button>
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消提现</button>
                                         {% else %}
                                             <button type="submit" class="btn btn-success">自动提现</button>
                                         {% endif %}
                                     </span>
                                 </div>
                             </form>
+                            <form role="form" action="/user/change_property/auto_giftbox/{% if user_info.auto_giftbox  %}0{% else %}1{% endif %}" method="post">
+
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i>
+                                                </span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_giftbox %}O{% else %}X{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_giftbox  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消开免费宝箱</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">开免费宝箱</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>
+                            <form role="form" action="/user/change_property/auto_cashbox/{% if user_info.auto_cashbox  %}0{% else %}1{% endif %}" method="post">
+
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i>
+                                                </span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_cashbox %}O{% else %}X{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_cashbox  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消开收费宝箱</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">开收费宝箱</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </form>                            
+                        </div>
+                        <div class="tab-pane fade{% if action is none or action == 'info' %} active in{% endif %}" id="info">
+                            <br />
+                            {% if err_msg and (action is none or action == 'info') %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{ err_msg }}
+                                </div>
+                            {% endif %}
+
+                            <div class="form-group input-group ">
+                                <span class="input-group-addon"><span style="width: 16px; display: inline-block;">U</span></span>
+                                <input type="text" class="form-control" placeholder="" value="{{ user_info.username }}" disabled>
+                            </div>
+                            <div class="form-group input-group">
+                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-check"></i>
+                                            </span>
+                                <input type="text" class="form-control" value="{% if user_info.active %}O{% else %}X{% endif %}" disabled>
+                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">状态</span>
+                                            </span>
+                            </div>
+                            <div class="form-group input-group">
+                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i>
+                                            </span>
+                                <input type="text" class="form-control" value="{% if user_info.is_admin %}O{% else %}X{% endif %}" disabled>
+                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">管理员</span>
+                                            </span>
+                            </div>
+                            <div class="form-group input-group">
+                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-group"></i>
+                                            </span>
+                                <input type="text" class="form-control" value="{{ user_info.max_account_no|default('2') }}" disabled>
+                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">迅雷账号限制</span>
+                                            </span>
+                            </div>
+                            
                             <form role="form" action="/user/change_info" method="post">
                                 <div class="form-group input-group">
                                     <span class="input-group-addon"><span style="width: 16px; display: inline-block;">@</span></span>
@@ -123,8 +160,6 @@
 
                                     <input type="password" class="form-control" name="new2_password" placeholder="再次输入新密码">
                                 </div>
-
-
                                 <button type="submit" class="btn btn-default">提交</button>
                                 <button type="reset" class="btn btn-default">重置</button>
                             </form>

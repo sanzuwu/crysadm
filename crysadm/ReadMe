@@ -1,0 +1,16 @@
+2016-03-08：
+	1、增加了开宝箱功能，可选免费和付费。
+
+	2、宝箱开启方向目前没有web指定，只能代码指定。位于 crysadm_helper.py 的以下二个函数中
+		prc_background_giftbox
+		prc_background_cashbox
+	   修改:
+		xunlei_api_open_stone(cookies=cookies, giftbox_id=box.get('id'), direction='3')中的direction='?"，可选为 1、2、3，对应手机APP的“左切、竖切、右切”
+
+	3、修改了批量任务的执行方式，理论上不会发生并发冲突导致部分用户失败（本身用户异常的不算。。。）
+
+	4、优化了CSS的获取方式，全部本地获取，不再联网，极大改善网页打开速度。（同时也不能保证CSS是最新版本）
+
+	5、修改了“我的矿机”页面显示的数据、手机端显示的数据。
+
+	6、还是那句话，对于使用这个产生的任何不良后果，不承担任何责任。

@@ -11,6 +11,14 @@ class RedisConfig():
         self.db = db
         self.password = password
 
+# Crysadm 自动后台任务时间设置，单位秒
+class AutoTaskConfig(object):    
+    collect_timer = 6*60*60 # 收取水晶间隔时间改为6小时，默认为25分钟.
+    drawcash_timer = 30*60 #自动提现间隔时间，默认为30分钟。
+    update_online_user_timer = 15 #刷新在线用户数据间隔时间，默认15秒。
+    update_offline_user_timer = 1*60*60 #刷新离线用户数据间隔时间，默认1小时.
+
+
 # Crysadm 配置
 class Config(object):
     DEBUG = False  #测试模式
@@ -23,7 +31,7 @@ class Config(object):
     PASSWORD_PREFIX = "08b3db21-d120-11e4-9ttd-10ddb199c373"  #密码前缀
     ENCRYPT_PWD_URL = None  #模式
     SERVER_IP = '0.0.0.0'  #服务器IP
-    SERVER_PORT =4000   #端口
+    SERVER_PORT = 4000  #端口
 
 # 正常运行时配置
 class ProductionConfig(Config):

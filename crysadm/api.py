@@ -5,6 +5,7 @@ from crysadm_helper import r_session
 from requests.adapters import HTTPAdapter
 import time
 from urllib.parse import urlparse, parse_qs
+from datetime import datetime, timedelta
 
 requests.packages.urllib3.disable_warnings()
 
@@ -12,10 +13,9 @@ requests.packages.urllib3.disable_warnings()
 server_address = 'http://2-api-red.xunlei.com'
 agent_header = {'user-agent': "RedCrystal/2.0.0 (iPhone; iOS 8.4; Scale/2.00)"}
 
-# server_address = 'http://1-api-red.xunlei.com/index.php'
-# agent_header = {'user-agent': "RedCrystal/2.0.0 (iPhone; iOS 8.4; Scale/2.00)"}
+#server_address = 'http://1-api-red.xunlei.com/index.php'
+#agent_header = {'user-agent': "RedCrystal/2.0.0 (iPhone; iOS 8.4; Scale/2.00)"}
 
-# agent_header = {'user-agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36"}
 DEBUG_MODE = False
 
 # 提交链接给迅雷，获取返回信息
@@ -27,8 +27,11 @@ def xunlei_api_posttoxunlei(cookies, url, data, verify=False, headers=agent_head
         r = requests.post(url=address, data=data, verify=verify, headers=headers, cookies=cookies, timeout=timeout)        
     except requests.exceptions.RequestException as e:
         return __handle_exception(e=e)
-    if r.status_code != 200:
+
+    if r.status_code != 200: 
         return __handle_exception(rd=r.reason)
+
+    if DEBUG_MODE: print('  Result = %s' % r.text)    
     return json.loads(r.text)
 
 # 获取输入的cookies信息
@@ -45,7 +48,7 @@ def xunlei_api_get_mine_info(cookies):
 
 
 # 检测用户是否有可提现的金额（周二 11:00~18:00）
-def xunlei_api_isCashDay(cookies):
+def xunlei_api_isCashDay(cookies=None): 
     cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '2'
     body = dict(hand='0', v='1', ver='1')
     return xunlei_api_posttoxunlei(url='/?r=usr/drawcashInfo', data=body, cookies=cookies)
@@ -65,58 +68,40 @@ def xunlei_api_require_cash(cookies, money):
     if DEBUG_MODE:
         print('call from xunlei_api_require_cask(%s, %s)' % (cookies, money))
     return xunlei_api_posttoxunlei(url='?r=usr/drawpkg', data=body, cookies=cookies)
-# 向迅雷申请提现2
+
+# 获取免费宝箱信息
+def xunlei_api_get_giftbox(cookies):
+    cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '2'
+    body = dict(tp='0', p='0', ps='60', t='', v='2', cmid='-1')
+    return xunlei_api_posttoxunlei(url='/?r=usr/giftbox', data=body, cookies=cookies).get('ci')
+
+# 打开宝箱
+def xunlei_api_open_stone(cookies, giftbox_id, direction):
+    cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '1'
+    body = dict(v='1', id=str(giftbox_id), side=direction)
+    return xunlei_api_posttoxunlei(url='/?r=usr/openStone', data=body, cookies=cookies).get('get')
+
+# 向迅雷申请提现
 # 增加提现下限，当可提现金额少于指定值时，不提现
 # cookies = 用户信息
 # limits = 提现下限值，单位元
-def xunlei_api_exec_getCash2(cookies, limits):
-    # 检测是否可提现
-    r = xunlei_api_isCashDay(cookies)
-    if r.get('r') != 0: 
-        return r
-    if r.get('is_tm') == 0: 
-        return dict(r=0, rd=r.get('tm_tip'))
+def xunlei_api_exec_getCash(cookies, limits):
+    # 检测是否可提现   
+    r = xunlei_api_isCashDay(cookies)   
+    if r.get('r') != 0: return r
+    if r.get('is_tm') == 0: return dict(r=0, rd=r.get('tm_tip'))
     # 获取帐户可提现余额
-    r = xunlei_api_get_balance_inof(cookies)
+    r = xunlei_api_get_balance_inof(cookies)    
     if r.get('r') != 0: 
         return r
-    wc_pkg = r.get('wc_pkg')
+    wc_pkg = r.get('wc_pkg')   
     # 如果设置了提取下限且帐户金额少于下限值，退出
     if limits is not None and wc_pkg < limits: 
         return dict(r=1, rd='帐户金额少于下限值%s元' % limits)
     # 没有设置下限，当可提现金额大于200元时，提取200元
     if wc_pkg > 200: 
         wc_pkg = 200
-    # 申请提现
-    return xunlei_api_require_cash(cookies, wc_pkg)
-
-# 向迅雷申请提现
-def xunlei_api_exec_getCash(cookies):
-    # 检测是否为可提现时间
-    if DEBUG_MODE: 
-        print('call from xunlei_api_exec_getCash(cookies) ......')
-    r = xunlei_api_isCashDay(cookies)
-    if DEBUG_MODE: 
-        print(' xunlei_api_isCashDay(%s) = %s' % (cookies, r))
-    if r.get('r') != 0: 
-        return r
-    if r.get('is_tm') == 0: 
-        return dict(r=0, rd=r.get('tm_tip'))
-    # 获取帐户可提现的余额
-    r = xunlei_api_get_balance_inof(cookies)
-    if DEBUG_MODE: 
-        print(' xunlei_api_get_balance_inof(%s)= %s' % (cookies, r))
-    if r.get('r') != 0: 
-        return r
-    # 获取可提现的金额（元）
-    wc_pkg = r.get('wc_pkg')
-    if DEBUG_MODE: 
-        print(' wc_pkg = %s' % wc_pkg)
-    # 如果余额大于200，则提取200元（迅雷限制单次提取最大金额为200元）    
-    if wc_pkg > 200: 
-        wc_pkg = 200
-    # 申请提现
-    if DEBUG_MODE: print (' require cash now ......')
+    # 申请提现    
     return xunlei_api_require_cash(cookies, wc_pkg)
 
 # 收集水晶
@@ -124,7 +109,6 @@ def xunlei_api_exec_collect(cookies):
     cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '1'
     body = dict(hand='0', v='2', ver='1')
     return xunlei_api_posttoxunlei(url='/index.php?r=mine/collect', data=body, cookies=cookies)
-
 
 # 获取速度状态
 def xunlei_api_get_spped_stat(s_type, cookies):
