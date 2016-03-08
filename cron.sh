@@ -27,9 +27,9 @@ function random()
 BASE_DIR="$( cd "$( dirname "$0"  )" && pwd  )"
 #定义变量minutes 为随机数
 minutes=$(random 0 59)
-echo "${minutes} * * * * root ${BASE_DIR}/crysadm/run.sh">>/etc/crontab
+echo "${minutes} * * * * root ${BASE_DIR}/run.sh">>/etc/crontab
 echo ===============starting cron==================
-/etc/init.d/cron start
+cron start
 echo =================done!========================
 
 
