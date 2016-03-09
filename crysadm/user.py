@@ -54,6 +54,7 @@ def logout():
     if session.get('admin_user_info') is not None:
         session['user_info'] = session.get('admin_user_info')
         del session['admin_user_info']
+        return redirect(url_for('admin_user'))
     session.clear()
     return redirect(url_for('login'))
 
@@ -109,7 +110,9 @@ def user_change_property(field, value):
     if field == 'auto_giftbox':  # 开免费宝箱
         user_info['auto_giftbox'] = True if value =='1' else False
     if field == 'auto_cashbox': # 开收费宝箱
-        user_info['auto_cashbox'] = True if value =='1' else False    
+        user_info['auto_cashbox'] = True if value =='1' else False
+    if field == 'auto_stealattack': # 水晶进攻与复仇
+        user_info['auto_stealattack'] = True if value =='1' else False
     r_session.set(user_key, json.dumps(user_info))
 
     return redirect(url_for('user_profile'))
