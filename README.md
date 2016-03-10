@@ -47,7 +47,7 @@
 用 `cd` 命令进入任意可写权限文件夹，输入命令<br>
 `sudo git clone https://github.com/sanzuwu/crysadm.git`<br>
 等待下载完成，输入命令<br>
-`cd crysadm  &amp;&amp; sudo chmod +x setup.sh &amp;&amp; ./setup.sh`<br>
+`cd crysadm  && sudo chmod +x setup.sh &amp;&amp; ./setup.sh`<br>
 此时等待安装，完成后会自动启动云监工。<br>
 ***
 ##PS:<br>
