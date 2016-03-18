@@ -31,6 +31,12 @@
                     {{ err_msg }}
                 </div>
             {% endif %}
+            {% if info_msg %}
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    {{ info_msg }}
+                </div>
+            {% endif %}
             <form class="m-t" role="form" action="/user/register" method="post">
                 <div class="form-group">
                     <input class="form-control" placeholder="邀请码" name="invitation_code" type="text" value="{{ invitation_code }}" autofocus>

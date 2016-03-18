@@ -51,19 +51,6 @@
                                 </span>
                             </div>
                         </form>
-                        <form role="form" action="/admin/change_property/auto_collect/{% if user.auto_collect %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
-                            <div class="form-group input-group">
-                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
-                                <input type="text" class="form-control" value="{% if user.auto_collect %}O{% else %}X{% endif %}" disabled />
-                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
-                                {% if user.auto_collect  %}
-                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动收取</button>
-                                {% else %}
-                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">自动收取</button>
-                                {% endif %}
-                                </span>
-                            </div>
-                        </form>
                         <form role="form" action="/admin/change_property/is_admin/{% if user.is_admin  %}0 {% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
@@ -71,9 +58,86 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                     {% if user.is_admin  %}
                                         <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消管理员</button>
+
                                     {% else %}
                                         <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">设为管理员</button>
+
                                     {% endif %}
+                                </span>
+                            </div>
+                        </form>
+                        <form role="form" action="/admin/change_property/auto_collect/{% if user.auto_collect %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_collect %}O{% else %}X{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_collect  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消收取水晶</button>
+
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">收取水晶</button>
+
+                                {% endif %}
+                                </span>
+                            </div>
+                        </form>
+                        <form role="form" action="/admin/change_property/auto_giftbox/{% if user.auto_giftbox %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_giftbox %}O{% else %}X{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_giftbox  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消免费宝箱</button>
+
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">免费宝箱</button>
+
+                                {% endif %}
+                                </span>
+                            </div>
+                        </form>
+                        <form role="form" action="/admin/change_property/auto_cashbox/{% if user.auto_cashbox %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_cashbox %}O{% else %}X{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_cashbox  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消收费宝箱</button>
+
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">收费宝箱</button>
+
+                                {% endif %}
+                                </span>
+                            </div>
+                        </form>
+                        <form role="form" action="/admin/change_property/auto_searcht/{% if user.auto_searcht %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_searcht %}O{% else %}X{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_searcht  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消秘银进攻</button>
+
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">秘银进攻</button>
+
+                                {% endif %}
+                                </span>
+                            </div>
+                        </form>
+                        <form role="form" action="/admin/change_property/auto_getaward/{% if user.auto_getaward %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_getaward %}O{% else %}X{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_getaward  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消幸运转盘</button>
+
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">幸运转盘</button>
+
+                                {% endif %}
                                 </span>
                             </div>
                         </form>
@@ -102,6 +166,7 @@
         </div>
     <!-- /.col-lg-12 -->
 {% endblock %}
+
 {% block navibar %}
     <div class="col-lg-10">
         <h2>用户管理</h2>

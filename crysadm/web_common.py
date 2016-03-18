@@ -277,13 +277,11 @@ def add_function():
         return str(crystal_values) + '个'
 
     # 获取设备类型
-    def get_device_type(device_code):
-        if device_code == 'PC':
-            return 'PC'
-        elif device_code == 421:
-            return '路由'
+    def get_device_type(device_code, model_code):
+        if device_code == 421:
+            return model_code
         elif device_code == 321:
-            return '赚钱宝'
+            return model_code
         return '不知道'
 
     def int2ip(int_ip):

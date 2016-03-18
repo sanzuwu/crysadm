@@ -1,5 +1,4 @@
-/* @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en"); */
-@import url("gstatic/googlefonts.css");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en");
 /*
  *
  *   INSPINIA - Responsive Admin Theme
@@ -4183,14 +4182,14 @@ body.modal-open {
   width: 300px;
 }
 .loginColumns {
-  max-width: 460px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 50px 20px 20px 20px;
+  padding: 100px 20px 20px 20px;
 }
 .passwordBox {
   max-width: 460px;
   margin: 0 auto;
-  padding: 50px 20px 20px 20px;
+  padding: 100px 20px 20px 20px;
 }
 .logo-name {
   color: #e6e6e6;

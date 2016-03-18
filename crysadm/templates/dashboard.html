@@ -17,13 +17,13 @@
 {% endblock %}
 {% block content %}
 
-    <div class="row">
+    <div class="row">    
         <div class="col-lg-3 col-md-6">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <span class="label label-success pull-right" style="padding-top: 5px;">实时</span>
                     <h5>上传速度</h5>
-                </div> 
+                </div>
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-xs-3">
@@ -452,7 +452,7 @@
                         x: -20 //center
                     },
                     xAxis: {
-                        categories: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"]
+                        categories: ["01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"]
                     },
                     yAxis: {
                         min: 0,
@@ -559,20 +559,20 @@
                 if($('#live_speed').html() !== convert_speed(data.today_data.last_speed)){
                     $('#live_speed').html(convert_speed(data.today_data.last_speed));
 
-                    if(data.today_data.last_speed < 1024){
-                        $('#speed_unit').html('K')
-                    }else{
+                    if(data.today_data.last_speed > 1024){
                         $('#speed_unit').html('M')
+                    }else{
+                        $('#speed_unit').html('K')
                     }
                     flash_element($('#live_speed'));
                 }
                 if($('#down_speed').html() !== convert_speed(data.today_data.deploy_speed)){
                     $('#down_speed').html(convert_speed(data.today_data.deploy_speed));
 
-                    if(data.today_data.deploy_speed < 1024){
-                        $('#speed2_unit').html('K')
-                    }else{
+                    if(data.today_data.deploy_speed > 1024){
                         $('#speed2_unit').html('M')
+                    }else{
+                        $('#speed2_unit').html('K')
                     }
                     flash_element($('#down_speed'));
                 }
@@ -601,7 +601,7 @@
             reload_data();
             reload_data_ten_minutes();
             setInterval(reload_data_ten_minutes,60*1000*10);
-            setInterval(reload_data,5000);
+            setInterval(reload_data,15000);
 
         });
 

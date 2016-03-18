@@ -130,6 +130,14 @@ def admin_change_property(field, value, username):
         user_info['active'] = True if value == '1' else False
     elif field == 'auto_collect':
         user_info['auto_collect'] = True if value == '1' else False
+    elif field == 'auto_giftbox':
+        user_info['auto_giftbox'] = True if value == '1' else False
+    elif field == 'auto_cashbox':
+        user_info['auto_cashbox'] = True if value == '1' else False
+    elif field == 'auto_searcht':
+        user_info['auto_searcht'] = True if value == '1' else False
+    elif field == 'auto_getaward':
+        user_info['auto_getaward'] = True if value == '1' else False
 
     r_session.set(user_key, json.dumps(user_info))
 
@@ -147,8 +155,8 @@ def admin_change_user_info(username):
         session['error_message'] = '迅雷账号限制必须为整数.'
         return redirect(url_for(endpoint='admin_user_management', username=username))
 
-    if not 0 < int(max_account_no) < 201:
-        session['error_message'] = '迅雷账号限制必须为 1~20.'
+    if not 0 < int(max_account_no) < 101:
+        session['error_message'] = '迅雷账号限制必须为 1~100.'
         return redirect(url_for(endpoint='admin_user_management', username=username))
 
     user_key = '%s:%s' % ('user', username)

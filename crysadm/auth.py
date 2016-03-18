@@ -7,17 +7,6 @@ from flask import Response, request, session, redirect, url_for
 from functools import wraps
 from crysadm import r_session
 
-# 将当前用户添加到在线用户列表当中
-def __handshake():
-    user = session.get('user_info')
-    username = user.get('username')
-    if username is None or not username:
-        username = ''
-    key = 'user:%s:is_online' % username
-    # SETEX(KEY_NAME TIMEOUT VALUE)
-    r_session.setex(key, '1', 120)
-    r_session.sadd('global:online.users', username)
-
 # 需要管理员权限
 def requires_admin(f):
     @wraps(f)
@@ -41,3 +30,10 @@ def requires_auth(f):
         return f(*args, **kwargs)
 
     return decorated
+
+def __handshake():
+    user = session.get('user_info')
+    username = user.get('username') if user.get('username') is not None else ''
+    key = 'user:%s:is_online' % username
+    r_session.setex(key, '1', 120)
+    r_session.sadd('global:online.users', username)

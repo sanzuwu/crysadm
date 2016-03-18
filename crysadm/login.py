@@ -1,6 +1,3 @@
-#! /usr/bin/env python3.4
-# -*- coding: utf-8 -*-
-# login.py - xunlei user login
 __author__ = 'powergx'
 import requests
 import random
@@ -9,18 +6,19 @@ from util import md5
 from base64 import b64encode
 from urllib.parse import unquote, urlencode
 
-# 字符串转整数
+
 def StrToInt(str):
-    """ StrToInt - conver String to Integer """
     bigInteger = 0
+
     for char in str:
         bigInteger <<= 8
         bigInteger += ord(char)
+
     return bigInteger
 
-# 
+
 def pow_mod(x, y, z):
-    """ Calculate (x ** y) % z efficiently. """
+    "Calculate (x ** y) % z efficiently."
     number = 1
     while y:
         if y & 1:
@@ -31,7 +29,6 @@ def pow_mod(x, y, z):
 
 
 def old_login(username, md5_password):
-    """ old_login(username, md5_password) """
     exponent = int("010001", 16)
     modulus = int("D6F1CFBF4D9F70710527E1B1911635460B1FF9AB7C202294D04A6F135A906E90E2398123C234340A3CEA0E5EFDC"
                   "B4BCF7C613A5A52B96F59871D8AB9D240ABD4481CCFD758EC3F2FDD54A1D4D56BFFD5C4A95810A8CA25E87FDC75"
@@ -56,12 +53,7 @@ def old_login(username, md5_password):
     login_status = json.loads(r.text)
     return login_status
 
-
 def login(username, md5_password, encrypt_pwd_url=None):
-    """ 
-    Xunlei login:
-        login(username, md5_password, encrypt_pwd_url)
-    """
     if encrypt_pwd_url is None or encrypt_pwd_url == '':
         return old_login(username, md5_password)
 
