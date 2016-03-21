@@ -130,10 +130,10 @@ def admin_change_property(field, value, username):
         user_info['active'] = True if value == '1' else False
     elif field == 'auto_collect':
         user_info['auto_collect'] = True if value == '1' else False
+    elif field == 'auto_drawcash':
+        user_info['auto_drawcash'] = True if value == '1' else False
     elif field == 'auto_giftbox':
         user_info['auto_giftbox'] = True if value == '1' else False
-    elif field == 'auto_cashbox':
-        user_info['auto_cashbox'] = True if value == '1' else False
     elif field == 'auto_searcht':
         user_info['auto_searcht'] = True if value == '1' else False
     elif field == 'auto_getaward':

@@ -70,6 +70,7 @@
                         </div>
 
                         <div class="tab-pane fade{% if action == 'profile_autoactive' %} active in{% endif %}" id="profile_autoactive">
+                            <br />
                             {% if err_msg and (action == 'profile_autoactive') %}
                                 <div class="alert alert-danger alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -92,6 +93,23 @@
                                 </div>
                             </form>
 
+                            <form role="form" action="/user/change_property/auto_drawcash/{% if user_info.auto_drawcash  %}0{% else %}1{% endif %}" method="post">
+
+                                <div class="form-group input-group">
+                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i>
+                                                </span>
+                                    <input type="text" class="form-control" value="{% if user_info.auto_drawcash %}O{% else %}X{% endif %}" disabled>
+                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                        {% if user_info.auto_drawcash  %}
+                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动提现</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">自动提现</button>
+                                        {% endif %}
+                                    </span>
+                                </div>
+
+                            </form>
+
                             <form role="form" action="/user/change_property/auto_giftbox/{% if user_info.auto_giftbox  %}0{% else %}1{% endif %}" method="post">
 
                                 <div class="form-group input-group">
@@ -108,21 +126,6 @@
                                 </div>
                             </form>
 
-                            <form role="form" action="/user/change_property/auto_cashbox/{% if user_info.auto_cashbox  %}0{% else %}1{% endif %}" method="post">
-
-                                <div class="form-group input-group">
-                                     <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i>
-                                                </span>
-                                    <input type="text" class="form-control" value="{% if user_info.auto_cashbox %}O{% else %}X{% endif %}" disabled>
-                                    <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
-                                        {% if user_info.auto_cashbox  %}
-                                            <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消收费宝箱</button>
-                                        {% else %}
-                                            <button type="submit" class="btn btn-success">收费宝箱</button>
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </form>
                             <form role="form" action="/user/change_property/auto_searcht/{% if user_info.auto_searcht  %}0{% else %}1{% endif %}" method="post">
 
                                 <div class="form-group input-group">
@@ -137,6 +140,7 @@
                                         {% endif %}
                                     </span>
                                 </div>
+
                             </form>
                             <form role="form" action="/user/change_property/auto_getaward/{% if user_info.auto_getaward  %}0{% else %}1{% endif %}" method="post">
 
@@ -152,8 +156,10 @@
                                         {% endif %}
                                     </span>
                                 </div>
+
                             </form>
                         </div>
+
                         <div class="tab-pane fade{% if action == 'password' %} active in{% endif %}" id="password">
                             <br />
                             {% if err_msg and action == 'password' %}

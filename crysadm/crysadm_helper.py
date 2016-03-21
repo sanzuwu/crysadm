@@ -140,8 +140,7 @@ def save_history(username):
                                                      'zqb_speed_stat') is not None else [0] * 24,
                                                  pc_speed=data.get('old_speed_stat') if data.get(
                                                      'old_speed_stat') is not None else [0] * 24))
-        this_pdc = data.get('mine_info').get('dev_m').get('pdc') + \
-                   data.get('mine_info').get('dev_pc').get('pdc')
+        this_pdc = data.get('mine_info').get('dev_m').get('pdc')
 
         today_data['pdc'] += this_pdc
         today_data.get('pdc_detail').append(dict(mid=data.get('privilege').get('mid'), pdc=this_pdc))
@@ -244,8 +243,8 @@ def clear_offline_user():
 def select_auto_task_user():
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'select_auto_task_user')
     auto_collect_accounts = []
+    auto_drawcash_accounts = []
     auto_giftbox_accounts = []
-    auto_cashbox_accounts = []
     auto_searcht_accounts = []
     auto_getaward_accounts = []
     for b_user in r_session.mget(*['user:%s' % name.decode('utf-8') for name in r_session.smembers('users')]):
@@ -261,16 +260,16 @@ def select_auto_task_user():
             user_id = account_info.get('user_id')
             cookies = json.dumps(dict(sessionid=session_id, userid=user_id))
             if user_info.get('auto_collect'): auto_collect_accounts.append(cookies)
+            if user_info.get('auto_drawcash'): auto_drawcash_accounts.append(cookies)
             if user_info.get('auto_giftbox'): auto_giftbox_accounts.append(cookies)
-            if user_info.get('auto_cashbox'): auto_cashbox_accounts.append(cookies)
             if user_info.get('auto_searcht'): auto_searcht_accounts.append(cookies)
             if user_info.get('auto_getaward'): auto_getaward_accounts.append(cookies)
     r_session.delete('global:auto.collect.cookies')
     r_session.sadd('global:auto.collect.cookies', *auto_collect_accounts)
+    r_session.delete('global:auto.drawcash.cookies')
+    r_session.sadd('global:auto.drawcash.cookies', *auto_drawcash_accounts)
     r_session.delete('global:auto.giftbox.cookies')
     r_session.sadd('global:auto.giftbox.cookies', *auto_giftbox_accounts)
-    r_session.delete('global:auto.cashbox.cookies')
-    r_session.sadd('global:auto.cashbox.cookies', *auto_cashbox_accounts)
     r_session.delete('global:auto.searcht.cookies')
     r_session.sadd('global:auto.searcht.cookies', *auto_searcht_accounts)
     r_session.delete('global:auto.getaward.cookies')
@@ -281,9 +280,17 @@ def check_collect(cookies):
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'check_collect')
     try:
         mine_info = get_mine_info(cookies)
-        if mine_info.get('r') == 0 and mine_info.get('td_not_in_a') > 16000:
+        if mine_info.get('r') == 0 and mine_info.get('td_not_in_a') > 18000:
             collect(cookies)
     except requests.exceptions.RequestException as e:
+        return
+
+# 执行自动提现的函数
+def check_drawcash(cookies):
+    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'check_drawcash')
+    try:
+        exec_draw_cash(cookies=cookies, limits=10)
+    except Exception as e:
         return
 
 # 执行免费宝箱函数
@@ -293,27 +300,10 @@ def check_giftbox(cookies):
         box_info = api_giftbox(cookies)
         if box_info is None: return
         for box in box_info:
-            #开宝箱
-            #direction = 开启方向
-            #   左切 = 1；竖切=2；右切=3
-            #box.get('cnum') = 开宝箱的费用,0为免费宝箱
             if box.get('cnum') == 0:
                 api_openStone(cookies=cookies, giftbox_id=box.get('id'), direction='3')
-    except Exception as e:
-        return
-
-# 执行收费宝箱函数
-def check_cashbox(cookies):
-    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'check_cashbox')
-    try:
-        box_info = api_giftbox(cookies)
-        if box_info is None: return
-        for box in box_info:
-            #开宝箱
-            #direction = 开启方向
-            #   左切 = 1；竖切=2；右切=3
-            #box.get('cnum') = 开宝箱的费用,0为免费宝箱
-            api_openStone(cookies=cookies, giftbox_id=box.get('id'), direction='3')
+            else:
+                api_giveUpGift(cookies=cookies, giftbox_id=box.get('id'))
     except Exception as e:
         return
 
@@ -322,14 +312,11 @@ def check_searcht(cookies):
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'check_searcht')
     try:
         r = api_searcht_steal(cookies)
-        if r.get('r') != 0:
-            print('体力值不足')
-        else:
+        if r.get('r') == 0:
             time.sleep(2)
-            t = api_searcht_collect(cookies=cookies, searcht_id=r.get('sid'))
+            api_searcht_collect(cookies=cookies, searcht_id=r.get('sid'))
             time.sleep(1)
             api_summary_steal(cookies=cookies, searcht_id=r.get('sid'))
-            print('进攻成功,获得:%s' % t.get('s'))
     except Exception as e:
         return
 
@@ -337,15 +324,10 @@ def check_searcht(cookies):
 def check_getaward(cookies):
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'check_getaward')
     try:
-        t = api_getconfig(cookies)
-        if t.get('rd') != 'ok':
-            print('%s' % t.get('rd'))
-        else:
-            if t.get('cost') != 5000:
-                print('所需秘银大于5000,不执行转动')
-            else:
+        r = api_getconfig(cookies)
+        if r.get('rd') == 'ok':
+            if r.get('cost') == 5000:
                 api_getaward(cookies)
-                print('开始执行转动')
     except Exception as e:
         return
 
@@ -355,17 +337,25 @@ def collect_crystal():
     for cookie in r_session.smembers('global:auto.collect.cookies'):
         check_collect(json.loads(cookie.decode('utf-8')))
 
+# 自动提现
+def drawcash_crystal():
+    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'drawcash_crystal')   
+    time_now = datetime.now()
+    if int(time_now.isoweekday()) != 2:        
+        return dict(r='0', rd='提现开放时间为每周二11:00-18:00(国家法定节假日除外)')
+
+    time_hour = time_now.hour
+    if int(time_hour) < 11 or int(time_hour) > 18: 
+        return dict(r='0', rd='提现开放时间为每周二11:00-18:00(国家法定节假日除外)')
+
+    for cookie in r_session.smembers('global:auto.drawcash.cookies'):
+        check_drawcash(json.loads(cookie.decode('utf-8')))
+
 # 免费宝箱
 def giftbox_crystal():
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'giftbox_crystal')
     for cookie in r_session.smembers('global:auto.giftbox.cookies'):
         check_giftbox(json.loads(cookie.decode('utf-8')))
-
-# 收费宝箱
-def cashbox_crystal():
-    print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'cashbox_crystal')
-    for cookie in r_session.smembers('global:auto.cashbox.cookies'):
-        check_cashbox(json.loads(cookie.decode('utf-8')))
 
 # 秘银进攻
 def searcht_crystal():
@@ -387,32 +377,31 @@ def timer(func, seconds):
 
 
 if __name__ == '__main__':
-    # 如有任何疑问及Bug欢迎加入L.k群讨论
     # 执行收取水晶时间，单位为秒，默认为30秒。
     # 每6小时检测一次收取水晶
-    threading.Thread(target=timer, args=(collect_crystal, 360)).start()
-    # 执行免费宝箱时间，单位为秒，默认为20秒。
-    # 每20分钟检测一次免费宝箱
-    threading.Thread(target=timer, args=(giftbox_crystal, 20)).start()
-    # 执行收费宝箱时间，单位为秒，默认为40秒。
-    # 每40分钟检测一次收费宝箱
-    threading.Thread(target=timer, args=(cashbox_crystal, 40)).start()
-    # 执行秘银进攻时间，单位为秒，默认为50秒。
-    # 每50分钟检测一次秘银进攻
-    threading.Thread(target=timer, args=(searcht_crystal, 50)).start()
-    # 执行幸运转盘时间，单位为秒，默认为60秒。
-    # 每60分钟检测一次幸运转盘
-    threading.Thread(target=timer, args=(getaward_crystal, 60)).start()
-    # 刷新在线用户数据，单位为秒，默认为15秒。
+    threading.Thread(target=timer, args=(collect_crystal, 60*60*6)).start()
+    # 执行自动提现时间，单位为秒，默认为60秒。
+    # 每60分钟检测一次自动提现
+    threading.Thread(target=timer, args=(drawcash_crystal, 60*60)).start()
+    # 执行免费宝箱时间，单位为秒，默认为40秒。
+    # 每40分钟检测一次免费宝箱
+    threading.Thread(target=timer, args=(giftbox_crystal, 60*40)).start()
+    # 执行秘银进攻时间，单位为秒，默认为240秒。
+    # 每240分钟检测一次秘银进攻
+    threading.Thread(target=timer, args=(searcht_crystal, 60*60*4)).start()
+    # 执行幸运转盘时间，单位为秒，默认为360秒。
+    # 每360分钟检测一次幸运转盘
+    threading.Thread(target=timer, args=(getaward_crystal, 60*60*6)).start()
+    # 刷新在线用户数据，单位为秒，默认为20秒。
     # 每30秒刷新一次在线用户数据
     threading.Thread(target=timer, args=(get_online_user_data, 30)).start()
     # 刷新离线用户数据，单位为秒，默认为60秒。
-    # 每10分钟刷新一次离线用户数据
-    threading.Thread(target=timer, args=(get_offline_user_data, 600)).start()
+    # 每60分钟刷新一次离线用户数据
+    threading.Thread(target=timer, args=(get_offline_user_data, 60*60)).start()
     # 从在线用户列表中清除离线用户，单位为秒，默认为60秒。
     # 每分钟检测离线用户
     threading.Thread(target=timer, args=(clear_offline_user, 60)).start()
     # 刷新选择自动任务的用户，单位为秒，默认为10分钟
-    threading.Thread(target=timer, args=(select_auto_task_user, 60)).start()
+    threading.Thread(target=timer, args=(select_auto_task_user, 60*10)).start()
     while True:
         time.sleep(1)

@@ -165,7 +165,6 @@ def dashboard_today_income_share():
 
         total_value = 0
         total_value += account_info.get('mine_info').get('dev_m').get('pdc')
-        total_value += account_info.get('mine_info').get('dev_pc').get('pdc')
 
         pie_data.append(dict(name='矿主ID:' + mid, y=total_value))
 

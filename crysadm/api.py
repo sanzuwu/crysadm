@@ -9,8 +9,9 @@ from urllib.parse import urlparse, parse_qs
 requests.packages.urllib3.disable_warnings()
 
 # 迅雷API接口
+appversion = '3.1.1'
 server_address = 'http://2-api-red.xunlei.com'
-agent_header = {'user-agent': "RedCrystal/2.0.0 (iPhone; iOS 8.4; Scale/2.00; Android 2.3.7)"}
+agent_header = {'User-Agent': "RedCrystal/3.0.0 (iPhone; iOS 9.2; Scale/2.00)"}
 
 # 提交迅雷链接，返回信息
 def api_post(cookies, url, data, verify=False, headers=agent_header, timeout=60):
@@ -26,7 +27,7 @@ def api_post(cookies, url, data, verify=False, headers=agent_header, timeout=60)
     return json.loads(r.text)
 
 # 申请提现请求
-def exec_draw_cash(cookies):
+def exec_draw_cash(cookies, limits):
     r = get_can_drawcash(cookies)
     if r.get('r') != 0:
         return r
@@ -39,6 +40,10 @@ def exec_draw_cash(cookies):
         return r
 
     wc_pkg = r.get('wc_pkg')
+
+    if limits is not None and wc_pkg < limits: 
+        return dict(r=1, rd='帐户金额少于下限值%s元' % limits)
+
     if wc_pkg > 200:
         wc_pkg = 200
 
@@ -75,7 +80,7 @@ def get_income_info(cookies):
 # 获取MINE信息
 def get_mine_info(cookies):
     cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '1'
-    body = dict(hand='0', v='2', ver='1')
+    body = dict(v='4', appversion=appversion)
     return api_post(url='/?r=mine/info', data=body, cookies=cookies)
 
 # 获取速度状态
@@ -129,7 +134,7 @@ def api_giveUpGift(cookies, giftbox_id):
     cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '1'
     body = dict(v='2', id=str(giftbox_id), tag='0')
     return api_post(url='/?r=usr/giveUpGift', data=body, cookies=cookies).get('get')
-    
+
 # 获取幸运转盘信息
 def api_getconfig(cookies):
     cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '2'
@@ -154,7 +159,7 @@ def api_searcht_collect(cookies, searcht_id):
     body = dict(sid=str(searcht_id), cmid='-2', v='2')
     return api_post(url='/?r=steal/collect', data=body, cookies=cookies)
 
-# 获取进攻结束信息
+# 获取秘银进攻结果
 def api_summary_steal(cookies, searcht_id):
     cookies['origin'] = '4' if len(cookies.get('sessionid')) == 128 else '1'
     body = dict(v='2', sid=str(searcht_id))
@@ -196,7 +201,7 @@ def is_api_error(r):
 
     return False
 
-
+# 接口故障
 def __handle_exception(e=None, rd='接口故障', r=-12345):
     if e is None:
         print(rd)
@@ -218,3 +223,4 @@ def __handle_exception(e=None, rd='接口故障', r=-12345):
 
     r_session.setex('api_error_count', str(err_count), err_count_ttl + 1)
     return dict(r=r, rd=rd)
+# @爱转角[2016-3-21]更新
