@@ -77,7 +77,7 @@
 - 添加免费宝箱开关
 - 添加秘银进攻开关
 - 添加幸运转盘开关
-
+****
 - 运行环境 python3.3+ , redis
 - crysadm 启动web服务
 - config 配置redis server
