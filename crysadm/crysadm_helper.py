@@ -281,7 +281,9 @@ def check_collect(cookies):
     try:
         mine_info = get_mine_info(cookies)
         if mine_info.get('r') == 0 and mine_info.get('td_not_in_a') > 18000:
+            time.sleep(1)
             collect(cookies)
+        time.sleep(2)
     except requests.exceptions.RequestException as e:
         return
 
@@ -290,6 +292,7 @@ def check_drawcash(cookies):
     print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'check_drawcash')
     try:
         exec_draw_cash(cookies=cookies, limits=10)
+        time.sleep(3)
     except Exception as e:
         return
 
@@ -304,6 +307,8 @@ def check_giftbox(cookies):
                 api_openStone(cookies=cookies, giftbox_id=box.get('id'), direction='3')
             else:
                 api_giveUpGift(cookies=cookies, giftbox_id=box.get('id'))
+            time.sleep(1)
+        time.sleep(2)
     except Exception as e:
         return
 
@@ -313,10 +318,11 @@ def check_searcht(cookies):
     try:
         r = api_searcht_steal(cookies)
         if r.get('r') == 0:
-            time.sleep(2)
-            api_searcht_collect(cookies=cookies, searcht_id=r.get('sid'))
             time.sleep(1)
+            api_searcht_collect(cookies=cookies, searcht_id=r.get('sid'))
+            time.sleep(2)
             api_summary_steal(cookies=cookies, searcht_id=r.get('sid'))
+        time.sleep(2)
     except Exception as e:
         return
 
@@ -327,7 +333,9 @@ def check_getaward(cookies):
         r = api_getconfig(cookies)
         if r.get('rd') == 'ok':
             if r.get('cost') == 5000:
+                time.sleep(1)
                 api_getaward(cookies)
+        time.sleep(2)
     except Exception as e:
         return
 
@@ -378,26 +386,26 @@ def timer(func, seconds):
 
 if __name__ == '__main__':
     # 执行收取水晶时间，单位为秒，默认为30秒。
-    # 每6小时检测一次收取水晶
-    threading.Thread(target=timer, args=(collect_crystal, 60*60*6)).start()
+    # 每30分钟检测一次收取水晶
+    threading.Thread(target=timer, args=(collect_crystal, 60*30)).start()
     # 执行自动提现时间，单位为秒，默认为60秒。
     # 每60分钟检测一次自动提现
     threading.Thread(target=timer, args=(drawcash_crystal, 60*60)).start()
     # 执行免费宝箱时间，单位为秒，默认为40秒。
     # 每40分钟检测一次免费宝箱
     threading.Thread(target=timer, args=(giftbox_crystal, 60*40)).start()
-    # 执行秘银进攻时间，单位为秒，默认为240秒。
-    # 每240分钟检测一次秘银进攻
-    threading.Thread(target=timer, args=(searcht_crystal, 60*60*4)).start()
+    # 执行秘银进攻时间，单位为秒，默认为480秒。
+    # 每480分钟检测一次秘银进攻
+    threading.Thread(target=timer, args=(searcht_crystal, 60*60*8)).start()
     # 执行幸运转盘时间，单位为秒，默认为360秒。
     # 每360分钟检测一次幸运转盘
     threading.Thread(target=timer, args=(getaward_crystal, 60*60*6)).start()
-    # 刷新在线用户数据，单位为秒，默认为20秒。
-    # 每30秒刷新一次在线用户数据
-    threading.Thread(target=timer, args=(get_online_user_data, 30)).start()
+    # 刷新在线用户数据，单位为秒，默认为15秒。
+    # 每15秒刷新一次在线用户数据
+    threading.Thread(target=timer, args=(get_online_user_data, 15)).start()
     # 刷新离线用户数据，单位为秒，默认为60秒。
-    # 每60分钟刷新一次离线用户数据
-    threading.Thread(target=timer, args=(get_offline_user_data, 60*60)).start()
+    # 每10分钟刷新一次离线用户数据
+    threading.Thread(target=timer, args=(get_offline_user_data, 60*10)).start()
     # 从在线用户列表中清除离线用户，单位为秒，默认为60秒。
     # 每分钟检测离线用户
     threading.Thread(target=timer, args=(clear_offline_user, 60)).start()

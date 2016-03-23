@@ -47,11 +47,11 @@
                                 <th class="col-md-1 hidden-xs">秘银数量</th>
                                 <th class="col-md-1 hidden-xs">宝箱</th>
                                 <th class="col-md-1 hidden-xs">未收取</th>
-                                <th class="col-md-1 hidden-xs">今日产值</th>
+                                <th class="col-md-1 hidden-xs">今日收益</th>
                                 <th class="col-md-1">余额</th>
                                 <th class="col-md-1">总收入</th>
                                 <th class="col-md-2 col-xs-1">更新时间</th>
-                                <th class="col-md-1" style="text-align:right;{% if show_drawcash %} min-width:180px;{% endif %} min-width:140px;">操作</th>
+                                <th class="col-md-1" style="text-align:right;{% if show_drawcash %} min-width:170px;{% else %} min-width:140px;{% endif %}">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -64,7 +64,7 @@
                                         <td class="hidden-xs">{{ row.data.mine_info.s |e }}</td>
                                         <td class="hidden-xs">{{ row.data.mine_info.td_box_pdc |e }}</td>
                                         <td class="hidden-xs">{{ row.data.mine_info.td_not_in_a |e }}</td>
-                                        <td class="hidden-xs">{{ row.data.mine_info.dev_m.pdc + row.data.mine_info.td_cm_pdc + row.data.mine_info.td_box_pdc |default('0') }} </td>
+                                        <td class="hidden-xs">{{ row.data.mine_info.dev_m.pdc + row.data.mine_info.td_box_pdc |default('0') }}</td>
                                         <td>{{ convert_to_yuan(row.data.income.r_can_use | default(0)) |e }}</td>
                                         <td>{{ convert_to_yuan(row.data.income.r_h_a | default(0))| e }}</td>
                                         <td class="hidden-xs">{{ row.data.updated_time }}</td>

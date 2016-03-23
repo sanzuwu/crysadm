@@ -247,7 +247,7 @@ def drawcash_id(user_id):
     user_id = account_info.get('user_id')
 
     cookies = dict(sessionid=session_id, userid=str(user_id))
-    r = exec_draw_cash(cookies)
+    r = exec_draw_cash(cookies, None)
     if r.get('r') != 0:
         session['error_message'] = r.get('rd')
         return redirect(url_for('excavators'))
@@ -278,7 +278,7 @@ def drawcash_all():
         user_id = account_info.get('user_id')
 
         cookies = dict(sessionid=session_id, userid=str(user_id))
-        r = exec_draw_cash(cookies)
+        r = exec_draw_cash(cookies, None)
         if r.get('r') != 0:
             error_message += 'Id:%s : %s<br />' % (user_id, r.get('rd'))
         else:
