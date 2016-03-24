@@ -241,7 +241,6 @@ def dashboard_DoD_income():
                                               expected_income=expected_income)
                                     )), mimetype='application/json')
 
-
 # 显示登录界面
 @app.route('/')
 def index():
