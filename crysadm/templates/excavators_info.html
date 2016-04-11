@@ -8,10 +8,8 @@
                 <div class="panel-body">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs">
-                        <li class="{% if action is none or action == 'info' %} active{% endif %}"><a href="#info" data-toggle="tab" aria-expanded="false">设备信息</a>
-                        </li>
-                        <li class="{% if action == 'pattern' %} active{% endif %}"><a href="#pattern" data-toggle="tab" aria-expanded="false">挖矿模式</a>
-                        </li>
+                        <li class="{% if action is none or action == 'info' %} active{% endif %}"><a href="#info" data-toggle="tab" aria-expanded="false">设备信息</a></li>
+                        <li class="{% if action == 'pattern' %} active{% endif %}"><a href="#pattern" data-toggle="tab" aria-expanded="false">挖矿模式</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -106,11 +104,11 @@
                                     <span class="input-group-addon"><span style="width: 73px; display: inline-block;">时间</span></span>
                                     <input type="text" class="form-control" value="{{ dev.result[1].schedule_hours[0].from }}点至{{ dev.result[1].schedule_hours[0].to }}点" disabled>
                                     <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
-                                    {% if dev.result[1].schedule_hours[0].type == 'unlimit' %}
-                                        <button type="submit" class="btn btn-success">全速模式</button>
-                                    {% else %}
-                                        <button type="submit" class="btn btn-success">智能模式</button>
-                                    {% endif %}
+                                        {% if dev.result[1].schedule_hours[0].type == 'unlimit' %}
+                                            <button type="submit" class="btn btn-success">全速模式</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-success">智能模式</button>
+                                        {% endif %}
                                     </span>
                                 </div>
                             </form>

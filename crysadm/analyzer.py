@@ -20,10 +20,9 @@ def __get_speed_stat_chart_data(speed_stat_data):
         speed_stat_value.append(this_data)
 
         dev_speed = speed_data.get('dev_speed')
-        pc_speed = speed_data.get('pc_speed')
 
         for i in range(0, 24):
-            this_data.get('data').append((dev_speed[i] + pc_speed[i]) / 8)
+            this_data.get('data').append(dev_speed[i] / 8)
 
     return dict(category=speed_stat_category, value=speed_stat_value)
 
@@ -47,7 +46,6 @@ def __get_history_speed_data(username):
         day_speed.append([0] * 24)
         for account in history_data.get('speed_stat'):
             day_speed.append(account.get('dev_speed'))
-            day_speed.append(account.get('pc_speed'))
         value.append(dict(name=str_date, data=[x / 8 for x in [sum(i) for i in zip(*day_speed)]]))
 
     return value
@@ -69,7 +67,6 @@ def __get_speed_comparison_data(history_data, today_data, str_updated_time):
         day_speed = list()
         for account in today_data:
             day_speed.append(account.get('dev_speed'))
-            day_speed.append(account.get('pc_speed'))
 
         total_speed = [x / 8 for x in [sum(i) for i in zip(*day_speed)]][0 - updated_time.hour:]
         value.append(dict(name='今天', data=total_speed))

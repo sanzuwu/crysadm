@@ -24,6 +24,7 @@ def admin_user():
         if user.get('login_as_time') is not None:
             if (datetime.now() - datetime.strptime(user.get('login_as_time'), '%Y-%m-%d %H:%M:%S')).days < 3:
                 recent_login_users.append(user)
+        user['is_online'] = r_session.exists('user:%s:is_online' % user.get('username')) # 临时寄存数据
         users.append(user)
 
     return render_template('admin_user.html',
@@ -53,7 +54,7 @@ def generate_inv_code():
     _chars = "0123456789ABCDEF"
     r_session.smembers('invitation_codes')
 
-    for i in range(0, 20 - r_session.scard('invitation_codes')):
+    for i in range(0, 30 - r_session.scard('invitation_codes')):
         r_session.sadd('invitation_codes', ''.join(random.sample(_chars, 10)))
 
     return redirect(url_for('admin_invitation'))
@@ -65,7 +66,7 @@ def generate_pub_inv_code():
     _chars = "0123456789ABCDEF"
     r_session.smembers('public_invitation_codes')
 
-    for i in range(0, 10 - r_session.scard('public_invitation_codes')):
+    for i in range(0, 15 - r_session.scard('public_invitation_codes')):
         key = ''.join(random.sample(_chars, 10))
         r_session.sadd('public_invitation_codes', key)
 
@@ -79,6 +80,14 @@ def generate_login_as(username):
 
     user = json.loads(user_info.decode('utf-8'))
     user['login_as_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    if user.get('log_as_body') is not None:
+        if len(user.get('log_as_body')) > 0:
+            r_session.set('%s:%s' % ('record', username), json.dumps(dict(diary=user.get('log_as_body')))) # 创建新通道,转移原本日记
+            user['log_as_body'] = []
+
+    if r_session.get('%s:%s' % ('record', username)) is None:
+        r_session.set('%s:%s' % ('record', username), json.dumps(dict(diary=[]))) # 创建缺失的日记
 
     r_session.set('%s:%s' % ('user', username), json.dumps(user))
     session['admin_user_info'] = session.get('user_info')
@@ -128,6 +137,8 @@ def admin_change_property(field, value, username):
         user_info['is_admin'] = True if value == '1' else False
     elif field == 'active':
         user_info['active'] = True if value == '1' else False
+    elif field == 'auto_column':
+        user_info['auto_column'] = True if value == '1' else False
     elif field == 'auto_collect':
         user_info['auto_collect'] = True if value == '1' else False
     elif field == 'auto_drawcash':
@@ -136,6 +147,8 @@ def admin_change_property(field, value, username):
         user_info['auto_giftbox'] = True if value == '1' else False
     elif field == 'auto_searcht':
         user_info['auto_searcht'] = True if value == '1' else False
+    elif field == 'auto_revenge':
+        user_info['auto_revenge'] = True if value == '1' else False
     elif field == 'auto_getaward':
         user_info['auto_getaward'] = True if value == '1' else False
 
@@ -178,6 +191,7 @@ def admin_del_user(username):
 
     # do del user
     r_session.delete('%s:%s' % ('user', username))
+    r_session.delete('%s:%s' % ('record', username))
     r_session.srem('users', username)
     for b_account_id in r_session.smembers('accounts:' + username):
         account_id = b_account_id.decode('utf-8')
@@ -257,7 +271,7 @@ def admin_message_send():
         return redirect(url_for('admin_message'))
 
     send_content = '{:<30}'.format(summary) + content
-    if to == 'ALL':
+    if to == 'all':
         for b_username in r_session.smembers('users'):
             send_msg(b_username.decode('utf-8'), subject, send_content, 3600 * 24 * 7)
 

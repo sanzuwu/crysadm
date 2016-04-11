@@ -30,27 +30,25 @@
                                 <span class="input-group-addon"><i class="fa">用户密码</i></span>
                                 <input type="password" class="form-control" name="new_password" placeholder="输入新密码" />
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
-                                              <button type="submit" class="btn btn-primary" style="text-align:left; width: 117px;">修改密码</button>
+                                    <button type="submit" class="btn btn-primary" style="text-align:left; width: 117px;">修改密码</button>
                                 </span>
                             </div>
                         </form>
 
                         <form role="form" action="/admin/change_property/active/{% if user.active %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
-
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-check"></i></span>
                                 <input type="text" class="form-control" value="{% if user.active %}O{% else %}X{% endif %}" disabled />
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                     {% if user.active  %}
                                         <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">禁用</button>
-
                                     {% else %}
                                         <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">启用</button>
-
                                     {% endif %}
                                 </span>
                             </div>
                         </form>
+
                         <form role="form" action="/admin/change_property/is_admin/{% if user.is_admin  %}0 {% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-wrench"></i></span>
@@ -58,14 +56,27 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                     {% if user.is_admin  %}
                                         <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消管理员</button>
-
                                     {% else %}
                                         <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">设为管理员</button>
-
                                     {% endif %}
                                 </span>
                             </div>
                         </form>
+
+                        <form role="form" action="/admin/change_property/auto_column/{% if user.auto_column %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-bar-chart-o"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_column %}目前是迅雷统计产量,可在监控中心查看{% else %}目前是默认统计产量,可在监控中心查看{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_column  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">默认产量统计</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">迅雷产量统计</button>
+                                {% endif %}
+                                </span>
+                            </div>
+                        </form>
+
                         <form role="form" action="/admin/change_property/auto_collect/{% if user.auto_collect %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
@@ -73,14 +84,13 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                 {% if user.auto_collect  %}
                                     <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消收取水晶</button>
-
                                 {% else %}
                                     <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">收取水晶</button>
-
                                 {% endif %}
                                 </span>
                             </div>
                         </form>
+
                         <form role="form" action="/admin/change_property/auto_drawcash/{% if user.auto_drawcash %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
@@ -88,14 +98,13 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                 {% if user.auto_drawcash  %}
                                     <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消自动提现</button>
-
                                 {% else %}
                                     <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">自动提现</button>
-
                                 {% endif %}
                                 </span>
                             </div>
                         </form>
+
                         <form role="form" action="/admin/change_property/auto_giftbox/{% if user.auto_giftbox %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
@@ -103,14 +112,13 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                 {% if user.auto_giftbox  %}
                                     <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消免费宝箱</button>
-
                                 {% else %}
                                     <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">免费宝箱</button>
-
                                 {% endif %}
                                 </span>
                             </div>
                         </form>
+
                         <form role="form" action="/admin/change_property/auto_searcht/{% if user.auto_searcht %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
@@ -118,14 +126,27 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                 {% if user.auto_searcht  %}
                                     <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消秘银进攻</button>
-
                                 {% else %}
                                     <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">秘银进攻</button>
-
                                 {% endif %}
                                 </span>
                             </div>
                         </form>
+
+                        <form role="form" action="/admin/change_property/auto_revenge/{% if user.auto_revenge %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
+                            <div class="form-group input-group">
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
+                                <input type="text" class="form-control" value="{% if user.auto_revenge %}O{% else %}X{% endif %}" disabled />
+                                <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
+                                {% if user.auto_revenge  %}
+                                    <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消秘银复仇</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">秘银复仇</button>
+                                {% endif %}
+                                </span>
+                            </div>
+                        </form>
+
                         <form role="form" action="/admin/change_property/auto_getaward/{% if user.auto_getaward %}O{% else %}1{% endif %}/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><i style="width: 16px;" class="fa fa-rmb"></i></span>
@@ -133,21 +154,18 @@
                                 <span class="input-group-btn" style="padding-top: 0px;padding-bottom: 0px;">
                                 {% if user.auto_getaward  %}
                                     <button type="submit" class="btn btn-danger" style="text-align:left; width: 117px;">取消幸运转盘</button>
-
                                 {% else %}
                                     <button type="submit" class="btn btn-success" style="text-align:left; width: 117px;">幸运转盘</button>
-
                                 {% endif %}
                                 </span>
                             </div>
                         </form>
+
                         <form role="form" action="/admin/change_user_info/{{ user.username|e }}" method="post">
                             <div class="form-group input-group">
-                                            <span class="input-group-addon"><i style="width: 16px;" class="fa fa-group"></i>
-                                            </span>
+                                <span class="input-group-addon"><i style="width: 16px;" class="fa fa-group"></i></span>
                                 <input type="text" class="form-control" name="max_account_no" placeholder="2" value="{{ user.max_account_no|default('2') }}" >
-                                            <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">迅雷账号限制</span>
-                                            </span>
+                                <span class="input-group-addon"><span style="text-align:left; width: 90px; display: inline-block;">迅雷账号限制</span></span>
                             </div>
                             <div class="form-group input-group">
                                 <span class="input-group-addon"><span style="width: 16px; display: inline-block;">@</span></span>

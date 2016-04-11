@@ -27,8 +27,8 @@
                             </div>
                         {% endif %}
 
-                    <div class="col-lg-12">
-                        <form autocomplete="off" class="form-inline" role="form" action="/account/add" method="post">
+                        <div class="col-lg-12">
+                            <form autocomplete="off" class="form-inline" role="form" action="/account/add" method="post">
                                 <div class="form-group">
                                     <label for="input_name" class="sr-only">账号</label>
                                     <input placeholder="crystal,crystal@xunlei.com" id="input_name" name="xl_username" autocomplete="off" class="form-control" type="text">
@@ -38,7 +38,6 @@
                                     <input placeholder="password" id="inputPassowrd" name="xl_password" class="form-control" type="password" autocomplete="off">
                                 </div>
                                 <button type="submit" style="margin-bottom: 0px;" class="btn btn-white">确认</button>
-
                             </form>
                         </div>
                     </div>
@@ -56,6 +55,14 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     已添加账号
+                    {% if accounts|length >0 %}
+                        <form style="margin-left: 3px;float:right;" role="form" action="/accounts/inactive_all" method="post">
+                            <button type="submit" style="margin: 0px;" class="btn btn-outline btn-success btn-xs">全部停止</button>
+                        </form>
+                        <form style="margin-left: 3px;float:right;" role="form" action="/accounts/active_all" method="post">
+                            <button type="submit" style="margin: 0px;" class="btn btn-outline btn-success btn-xs">全部启用</button>
+                        </form>
+                    {% endif %}
                 </div>
                 <!-- /.panel-heading -->
                 <div class="ibox-content">

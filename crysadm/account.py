@@ -113,3 +113,33 @@ def account_activel(xl_id):
     r_session.set(account_key, json.dumps(account_info))
 
     return redirect(url_for('accounts'))
+
+# 停止所有已经绑定的迅雷会员帐号
+@app.route('/accounts/inactive_all', methods=['POST'])
+@requires_auth
+def account_inactive_all():
+    user = session.get('user_info')
+
+    accounts_key = 'accounts:%s' % user.get('username')
+    for acct in sorted(r_session.smembers(accounts_key)):
+        account_key = 'account:%s:%s' % (user.get('username'), acct.decode("utf-8"))
+        account_info = json.loads(r_session.get(account_key).decode("utf-8"))
+        account_info['active'] = False
+        r_session.set(account_key, json.dumps(account_info))
+
+    return redirect(url_for('accounts'))
+
+# 激活所有已经停止的迅雷会员帐号
+@app.route('/accounts/active_all', methods=['POST'])
+@requires_auth
+def account_activel_all():
+    user = session.get('user_info')
+
+    accounts_key = 'accounts:%s' % user.get('username')
+    for acct in sorted(r_session.smembers(accounts_key)):
+        account_key = 'account:%s:%s' % (user.get('username'), acct.decode("utf-8"))
+        account_info = json.loads(r_session.get(account_key).decode("utf-8"))
+        account_info['active'] = True
+        r_session.set(account_key, json.dumps(account_info))
+
+    return redirect(url_for('accounts'))
